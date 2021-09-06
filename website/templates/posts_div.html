@@ -1,0 +1,152 @@
+{% extends "base.html" %} {% block title %}Home{% endblock %} {% block content %}
+<h1 align="center">{% block header %}Carrot Cakes{% endblock %}</h1>
+
+<style type="text/css">
+    h1{
+        margin-top: 9%;
+        margin-bottom: 2%;
+    }
+</style>
+
+<head>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+</head>
+
+<p><a href="#sec" class="scroll">Click me!</a></p>
+<br>
+
+<style type="text/css">
+    .scroll{
+        color: black;
+        font-family: 'Roboto', sans-serif;
+        font-size: 150%;
+    }
+    .scroll:hover{
+        color: black;
+    }
+</style>
+
+<div id="posts">
+    {% for post in posts %}
+    <div class="card border-dark" id="post-div">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <a href="/posts/{{post.user.username}}">{{post.user.username}}</a>
+
+            <!--Like div-->
+            <div> <!--Like div-->
+
+                <!-- switch icons of the heart if its liked or not -->
+
+                {{ post.likes|length }}
+                {% if user.id in post.likes|map(attribute="author")|list %}
+                <a href="/like-post/{{post.id}}"><i class="fas fa-heart"></i></a>
+                {% else %}
+                <a href="/like-post/{{post.id}}"><i class="far fa-heart"></i></a>
+                {% endif %}
+
+                {% if user.id == post.author %}
+                <div class="btn-group">
+                    <button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-bs-toggle="dropdown"></button>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="/delete-post/{{post.id}}" class="dropdown-item">Delete Cake</a>
+                        </li>
+                    </ul>
+                </div>
+                {% endif %}
+        </div>
+        </div>
+        <div class="card-body">
+            <div class="card-text" id="postContent">{{post.text}}</div>
+            <br />
+
+
+            <style type="text/css">
+                #postContent{
+                    font-family: 'Roboto', sans-serif;
+                    font-size: 37px;
+                }
+            </style>
+
+
+            <div class="collapse" id="comments-{{post.id}}">
+                <div class="card">
+                    <div class="card-body" id="comments-expanded-{{post.id}}">
+                        {% for comment in post.comments %}
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <a href="/posts/{{comment.user.username}}">{{comment.user.username}}</a
+                >: {{comment.text}}
+              </div>
+              <div>
+                <small class="text-muted"> {{comment.date_created}}</small>
+                {% if user.id == comment.author or user.id == post.author %}
+                <div class="btn-group">
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-primary dropdown-toggle"
+                    data-bs-toggle="dropdown"
+                  ></button>
+                  <ul class="dropdown-menu">
+                    <li>
+                      <a
+                        href="/delete-comment/{{comment.id}}"
+                        class="dropdown-item"
+                        >Delete</a
+                      >
+                    </li>
+                  </ul>
+                </div>
+                {% endif %}
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+      <p class="card-text">
+        {% if post.comments|length > 0 %}
+        <a data-bs-toggle="collapse" href="#comments-{{post.id}}" role="button">
+          <small>View {{post.comments|length}} Taco/s</small>
+        </a> {% else %}
+                                <small class="text-muted">No Taco/s added</small> {% endif %}
+                                </p>
+                                <form class="input-group mb-3" method="POST" action="/create-comment/{{post.id}}">
+                                    <input type="text" id="text" name="text" class="form-control" placeholder="You want do add a Taco?!" />
+                                    <button type="submit" class="btn btn-primary">Add Taco</button>
+                                </form>
+
+                                <style type="text/css">
+
+                                    form input, textarea{
+                                        font-family: 'Roboto', serif;
+                                        font-size: 15px;
+                                        border-radius: 2px;
+                                        border-radius: 2px solid;
+                                        border-color: blue;
+                                    }
+
+                                    #text{
+                                        border-color: blue;
+                                        outline: none;
+                                    }
+                                </style>
+
+                            </div>
+                            <div class="card-footer text-muted">{{post.date_created}}</div>
+                        </div>
+                        <br/> {% endfor %}
+                    </div>
+                    {% block footer %}
+                    <div align="center">
+                        <a href="/create-post"><button type="button" class="btn btn-primary btn-lg">
+      Create a new Cake
+    </button></a>
+    <br><br>
+    <section id="sec">
+        
+    </section>
+</div>
+{% endblock %} {% endblock %}
